@@ -58,28 +58,34 @@ api.add_resource(Logout, '/logout')
 
 
 class Games(Resource):
-    def get(self):
-        games = Game.query.all()
-        games_dict_list = [game.to_dict()
-                                for game in games]
-        response = make_response(
-            games_dict_list,
-            200
-        )
-        return response
+    def get(self, game_id=None):
+        if game_id:
+            game = Game.query.get_or_404(game_id)
+            user = game.user
+            cards = [cardz.id for cardz in game.card]
+            return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'card': cards})
+        else:
+            games = Game.query.all()
+            game_list = []
+            for game in games:
+                user = game.user
+                cards = [card.id for card in game.card]
+                game_list.append({'id': game.id, 'user_id': user.id, 'username': user.username, 'card': cards})
+            return jsonify(game_list)
+
     def post(self):
-        data =request.get_json()
-        game = Game(
-            price = data['price'],
-            # card - data["card"],
-            card_id = data['card_id'],
-            #user = data["user"],
-            user_id = data["user_id"]
-        )
+        data = request.get_json()
+        user_id = data['user_id']
+        bet = data['bet']
+        card_ids = data['card_ids']
+        game = Game(user_id=user_id, bet=bet)
+        for card_id in card_ids:
+            card = Card.query.get(card_id)
+            game.cards.append(card)
         db.session.add(game)
         db.session.commit()
-        return make_response(game.to_dict(),201)
-api.add_resource(Games, '/games')
+        return jsonify({'id': game.id, 'user_id': user_id, 'bet': bet, 'card_id': card_ids})
+api.add_resource(Games, '/games', '/games/<int:game_id>')
 
 
 

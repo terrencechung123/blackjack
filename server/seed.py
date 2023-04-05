@@ -81,14 +81,14 @@ with app.app_context():
     # create games
     games = [
         Game(user_id=1, result='Win'),
-        Game(user_id=2, result='Loss'),
+        Game(user_id=1, result='Loss'),
         Game(user_id=3, result='Tie'),
         Game(user_id=4, result='Win')
     ]
-    games[0].card = [cards[0], cards[1], cards[2]]
-    games[1].card = [cards[2], cards[3], cards[4]]
-    games[2].card = [cards[4], cards[5], cards[6]]
-    games[3].card = [cards[6], cards[7], cards[8]]
+    games[0].card = [cards[0], cards[15], cards[20]]
+    games[1].card = [cards[0], cards[4], cards[5]]
+    games[2].card = [cards[10], cards[11], cards[6]]
+    games[3].card = [cards[9], cards[7], cards[8]]
     db.session.add_all(games)
     db.session.commit()
 

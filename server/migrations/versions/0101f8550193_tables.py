@@ -1,8 +1,8 @@
 """tables
 
-Revision ID: 5019ddf7ddb1
+Revision ID: 0101f8550193
 Revises: 
-Create Date: 2023-04-05 14:09:12.264942
+Create Date: 2023-04-05 14:55:04.670441
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5019ddf7ddb1'
+revision = '0101f8550193'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,7 +27,6 @@ def upgrade():
     op.create_table('games',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
     sa.Column('result', sa.String(), nullable=True),
     sa.Column('user_hand', sa.String(), nullable=True),
     sa.Column('dealer_hand', sa.String(), nullable=True),
@@ -36,9 +35,10 @@ def upgrade():
     )
     op.create_table('cards',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('game_id', sa.Integer(), nullable=False),
-    sa.Column('value', sa.String(), nullable=True),
+    sa.Column('game_id', sa.Integer(), nullable=True),
+    sa.Column('value', sa.Integer(), nullable=True),
     sa.Column('suit', sa.String(), nullable=True),
+    sa.Column('name', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['game_id'], ['games.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

@@ -34,15 +34,14 @@ with app.app_context():
 
 
     print('creating games')
-    games = [
-        {'name': 'Game 1', 'user_id': 3, 'result': 'Win', 'card_id':1, 'user_hand':'','dealer_hand':''},
-        # {'name': 'Game 2', 'user_id': 2, 'result': 'Loss', 'card_id':[5,10,11]},
-        # {'name': 'Game 3', 'user_id': 3, 'result': 'Tie', 'card_id':[1,10]},
-        # {'name': 'Game 4', 'user_id': 4, 'result': 'Win'},
-        # {'name': 'Game 5', 'user_id': 5, 'result': 'Loss'},
+    games = [    {'name': 'Game 1', 'user_id': 3, 'result': 'Win', 'card_id':1, 'user_hand':'','dealer_hand':''},
+    # {'name': 'Game 2', 'user_id': 2, 'result': 'Loss', 'card_ids':[5,10,11]},
+    # {'name': 'Game 3', 'user_id': 3, 'result': 'Tie', 'card_ids':[1,10]},
+    # {'name': 'Game 4', 'user_id': 4, 'result': 'Win'},
+    # {'name': 'Game 5', 'user_id': 5, 'result': 'Loss'},
     ]
     for game in games:
-        new_game = Game(name=game['name'], user_id=game['user_id'], card_id=game['card_id'], result=game['result'], user_hand=game['user_hand'],dealer_hand=game['dealer_hand'])
+        new_game = Game(name=game['name'], user_id=game['user_id'], card_id=game['card_id'], result=game['result'], user_hand=game['user_hand'], dealer_hand=game['dealer_hand'])
         db.session.add(new_game)
 
 

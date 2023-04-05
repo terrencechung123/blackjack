@@ -34,7 +34,7 @@ class User(db.Model, SerializerMixin):
 class Game(db.Model, SerializerMixin):
     __tablename__='games'
 
-    serialize_rules = ()
+    serialize_rules = ('-user_id','-card_id')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)

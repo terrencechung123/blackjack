@@ -91,7 +91,7 @@ class GameById(Resource):
                 "error": "Game not found"
             }, 404)
         game_dict = game.to_dict(
-            rules=('card',))
+            rules=('card','user'))
         response = make_response(game_dict, 200)
         return response
 api.add_resource(GameById, '/games/<int:id>')
@@ -114,20 +114,28 @@ api.add_resource(Users, "/users")
 
 class UserById(Resource):
     def get(self, id):
-        user = User.query.filter_by(id=id).first().to_dict()
-        return make_response(
-            user,
-            200)
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return make_response({
+                "error": "User not found"
+            }, 404)
+        user_dict = user.to_dict(rules=('games',))
+        response = make_response(user_dict, 200)
+        return response
+
     def patch(self, id):
         user = User.query.filter_by(id=id).first()
-        data = request.get_json()
         if not user:
-            raise NotFound
+            return make_response({
+                "error": "User not found"
+            }, 404)
+        data = request.get_json()
         for attr in data:
             setattr(user, attr, data[attr])
         db.session.add(user)
         db.session.commit()
-        response = make_response(user.to_dict(), 200)
+        user_dict = user.to_dict(rules=('games',))
+        response = make_response(user_dict, 200)
         return response
 api.add_resource(UserById, "/users/<int:id>")
 
@@ -149,10 +157,16 @@ api.add_resource(Cards,"/cards")
 
 class CardById(Resource):
     def get(self, id):
-        card = Card.query.filter_by(id=id).first().to_dict()
-        return make_response(
-            card,
-            200)
+        card = Card.query.filter_by(id=id).first()
+        if not card:
+            return make_response({
+                "error": "Card not found"
+            }, 404)
+        card_dict = card.to_dict(rules=('games','users'))
+        response = make_response(card_dict, 200)
+        return response
+
+
     def delete(self, id):
         card = Card.query.filter_by(id=id).first()
         if not card:
@@ -167,4 +181,4 @@ api.add_resource(CardById, "/cards/<int:id>")
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5555, debug=True)

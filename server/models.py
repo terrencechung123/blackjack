@@ -14,8 +14,6 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String)
     _password_hash = db.Column(db.String)
 
-
-
     games = db.relationship('Game', backref='user')
     hands = association_proxy('games', 'card')
 

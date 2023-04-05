@@ -119,7 +119,7 @@ class UserById(Resource):
             return make_response({
                 "error": "User not found"
             }, 404)
-        user_dict = user.to_dict(rules=('games',))
+        user_dict = user.to_dict(rules=('games','cards'))
         response = make_response(user_dict, 200)
         return response
 
@@ -134,7 +134,7 @@ class UserById(Resource):
             setattr(user, attr, data[attr])
         db.session.add(user)
         db.session.commit()
-        user_dict = user.to_dict(rules=('games',))
+        user_dict = user.to_dict(rules=('games','cards'))
         response = make_response(user_dict, 200)
         return response
 api.add_resource(UserById, "/users/<int:id>")

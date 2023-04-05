@@ -15,7 +15,7 @@ class User(db.Model, SerializerMixin):
     _password_hash = db.Column(db.String)
 
     games = db.relationship('Game', backref='user')
-    hands = association_proxy('games', 'card')
+    cards = association_proxy('games', 'card')
 
 
     @hybrid_property
@@ -34,7 +34,7 @@ class User(db.Model, SerializerMixin):
 class Game(db.Model, SerializerMixin):
     __tablename__='games'
 
-    serialize_rules = ('-card', )
+    serialize_rules = ()
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)

@@ -62,15 +62,15 @@ class Games(Resource):
         if game_id:
             game = Game.query.get_or_404(game_id)
             user = game.user
-            cards = [cardz.id for cardz in game.card]
-            return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'card': cards, 'result': game.result})
+            cards = [card.id for card in game.cards]
+            return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
         else:
             games = Game.query.all()
             game_list = []
             for game in games:
                 user = game.user
-                cards = [card.id for card in game.card]
-                game_list.append({'id': game.id, 'user_id': user.id, 'username': user.username,'card': cards, 'result': game.result})
+                cards = [card.id for card in game.cards]
+                game_list.append({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
             return jsonify(game_list)
 
     def post(self):
@@ -84,7 +84,7 @@ class Games(Resource):
             game.cards.append(card)
         db.session.add(game)
         db.session.commit()
-        return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'card': cards, 'result': game.result})
+        return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
 api.add_resource(Games, '/games', '/games/<int:game_id>')
 
 
@@ -168,7 +168,7 @@ class CardById(Resource):
             return make_response({
                 "error": "Card not found"
             }, 404)
-        card_dict = card.to_dict(rules=('games','-games.card.game_id'))
+        card_dict = card.to_dict(rules=('_game_cards','-_game_cards.card'))
         response = make_response(card_dict, 200)
         return response
 

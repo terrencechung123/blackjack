@@ -1,5 +1,5 @@
 from config import db
-from models import User, Card, Game
+from models import User, Card, Game, Game_Cards
 from app import app
 
 with app.app_context():
@@ -7,6 +7,8 @@ with app.app_context():
     Game.query.delete()
     User.query.delete()
     Card.query.delete()
+    Game_Cards.query.delete()
+
     # create users
     users = [
         User(username='player1', _password_hash='password1'),
@@ -85,10 +87,10 @@ with app.app_context():
         Game(user_id=3, result='Tie'),
         Game(user_id=4, result='Win')
     ]
-    games[0].card = [cards[0], cards[15], cards[20]]
-    games[1].card = [cards[0], cards[4], cards[5]]
-    games[2].card = [cards[10], cards[11], cards[6]]
-    games[3].card = [cards[9], cards[7], cards[8]]
+    games[0].cards = [cards[0], cards[15], cards[20]]
+    games[1].cards = [cards[0], cards[4], cards[5]]
+    games[2].cards = [cards[10], cards[11], cards[6]]
+    games[3].cards = [cards[9], cards[7], cards[8]]
     db.session.add_all(games)
     db.session.commit()
 

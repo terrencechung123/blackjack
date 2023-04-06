@@ -42,8 +42,13 @@ class Game(db.Model, SerializerMixin):
     user_hand = db.Column(db.String)
     dealer_hand = db.Column(db.String)
 
-class Games_Cards(db.Model,SerializerMixin):
-    __tablename__='games_cards'
+    cards = db.relationship('Card', secondary='game_cards', back_populates='_game_cards')
+    
+
+class Game_Cards(db.Model,SerializerMixin):
+    __tablename__='game_cards'
+
+    serialize_rules = ()
 
     id = db.Column(db.Integer, primary_key=True)
     game_id=db.Column(db.Integer, db.ForeignKey('games.id'))
@@ -52,10 +57,11 @@ class Games_Cards(db.Model,SerializerMixin):
 
 
 
+
 class Card(db.Model, SerializerMixin):
     __tablename__ = 'cards'
 
-    serialize_rules = ('-games',)
+    serialize_rules = ('-games','-_game_cards','-game_id')
 
     id = db.Column(db.Integer, primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
@@ -65,6 +71,8 @@ class Card(db.Model, SerializerMixin):
 
     games = db.relationship('Game', backref='card')
     users = association_proxy('games', 'user')
+
+    _game_cards = db.relationship('Game', secondary='game_cards', back_populates='cards')
 
 
 

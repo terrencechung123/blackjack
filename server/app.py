@@ -63,14 +63,27 @@ class Games(Resource):
             game = Game.query.get_or_404(game_id)
             user = game.user
             cards = [card.id for card in game.cards]
-            return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
+            return jsonify({
+                'id': game.id,
+                'user_id': user.id,
+                'username': user.username,
+                'cards': cards,
+                'result': game.result,
+                'user_hand': game.user_hand,
+                'dealer_hand': game.dealer_hand})
         else:
             games = Game.query.all()
             game_list = []
             for game in games:
                 user = game.user
                 cards = [card.id for card in game.cards]
-                game_list.append({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
+                game_list.append({'id': game.id,
+                'user_id': user.id,
+                'username': user.username,
+                'cards': cards,
+                'result': game.result,
+                'user_hand': game.user_hand,
+                'dealer_hand': game.dealer_hand})
             return jsonify(game_list)
 
     def post(self):
@@ -83,7 +96,13 @@ class Games(Resource):
             game.cards.append(card)
         db.session.add(game)
         db.session.commit()
-        return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
+        return jsonify({'id': game.id,
+                'user_id': user.id,
+                'username': user.username,
+                'cards': cards,
+                'result': game.result,
+                'user_hand': game.user_hand,
+                'dealer_hand': game.dealer_hand})
 api.add_resource(Games, '/games', '/games/<int:game_id>')
 
 

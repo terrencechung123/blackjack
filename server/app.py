@@ -198,6 +198,19 @@ class Game_Card(Resource):
         pass
 api.add_resource(Game_Card,"/game_cards")
 
+class Game_Card_By_Id(Resource):
+    def get(self, id):
+        game_cards = Game_Cards.query.filter_by(id=id).first()
+        if not game_cards:
+            return make_response({
+                "error": "Game cards not found"
+            }, 404)
+        card_dict = game_cards.to_dict()
+        response = make_response(card_dict, 200)
+        return response
+
+api.add_resource(Game_Card_By_Id, "/game_cards/<int:id>")
+
 
 
 if __name__ == '__main__':

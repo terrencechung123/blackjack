@@ -4,7 +4,7 @@ from werkzeug.exceptions import NotFound, Unauthorized
 
 
 from config import app, db, api
-from models import User, Card, Game
+from models import User, Card, Game, Game_Cards
 
 
 
@@ -76,7 +76,6 @@ class Games(Resource):
     def post(self):
         data = request.get_json()
         user_id = data['user_id']
-        bet = data['bet']
         card_ids = data['card_ids']
         game = Game(user_id=user_id, bet=bet)
         for card_id in card_ids:
@@ -183,6 +182,21 @@ class CardById(Resource):
         db.session.commit()
         return make_response({}, 204)
 api.add_resource(CardById, "/cards/<int:id>")
+
+class Game_Card(Resource):
+    def get(self):
+        game_cards = Game_Cards.query.all()
+        game_cards_dict_list = [game_card.to_dict()
+                                for game_card in game_cards]
+        response = make_response(
+            game_cards_dict_list,
+            200
+        )
+        return response
+
+    def post(self, id):
+        pass
+api.add_resource(Game_Card,"/game_cards")
 
 
 

@@ -43,7 +43,7 @@ class Game(db.Model, SerializerMixin):
     dealer_hand = db.Column(db.String)
 
     cards = db.relationship('Card', secondary='game_cards', back_populates='_game_cards')
-    
+
 
 class Game_Cards(db.Model,SerializerMixin):
     __tablename__='game_cards'

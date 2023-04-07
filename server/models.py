@@ -68,6 +68,7 @@ class Card(db.Model, SerializerMixin):
     value = db.Column(db.Integer)
     suit = db.Column(db.String)
     name = db.Column(db.String)
+    image = db.Column(db.String)
 
     games = db.relationship('Game', backref='card')
     users = association_proxy('games', 'user')

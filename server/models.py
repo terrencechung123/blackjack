@@ -30,11 +30,13 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
 
+    def __repr__(self):
+        return f'<User {self.id}>'
 
 class Game(db.Model, SerializerMixin):
     __tablename__='games'
 
-    serialize_rules = ('-user_id','-card_id')
+    serialize_rules = ('-card_id','-user_id','-cards','-card')
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -43,7 +45,6 @@ class Game(db.Model, SerializerMixin):
     dealer_hand = db.Column(db.String)
 
     cards = db.relationship('Card', secondary='game_cards', back_populates='_game_cards')
-    
 
 class Game_Cards(db.Model,SerializerMixin):
     __tablename__='game_cards'
@@ -68,6 +69,7 @@ class Card(db.Model, SerializerMixin):
     value = db.Column(db.Integer)
     suit = db.Column(db.String)
     name = db.Column(db.String)
+    image = db.Column(db.String)
 
     games = db.relationship('Game', backref='card')
     users = association_proxy('games', 'user')

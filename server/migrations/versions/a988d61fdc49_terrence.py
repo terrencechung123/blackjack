@@ -1,8 +1,8 @@
-"""tables
+"""terrence
 
-Revision ID: 5924bfc343f6
+Revision ID: a988d61fdc49
 Revises: 
-Create Date: 2023-04-05 18:05:46.615922
+Create Date: 2023-04-07 08:55:03.175440
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5924bfc343f6'
+revision = 'a988d61fdc49'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -39,6 +39,7 @@ def upgrade():
     sa.Column('value', sa.Integer(), nullable=True),
     sa.Column('suit', sa.String(), nullable=True),
     sa.Column('name', sa.String(), nullable=True),
+    sa.Column('image', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['game_id'], ['games.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

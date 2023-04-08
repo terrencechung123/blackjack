@@ -1,13 +1,12 @@
 from flask import Flask, request, make_response, session, jsonify, abort
 from flask_restful import Resource, reqparse, Api, fields, marshal_with
 from werkzeug.exceptions import NotFound, Unauthorized
-
+from flask_cors import CORS
 
 from config import app, db, api
 from models import User, Card, Game, Game_Cards
 
-
-
+CORS(app)
 class Signup(Resource):
     def post(self):
         data = request.get_json()
@@ -58,34 +57,31 @@ api.add_resource(Logout, '/logout')
 
 
 class Games(Resource):
-    def get(self, game_id=None):
-        if game_id:
-            game = Game.query.get_or_404(game_id)
-            user = game.user
-            cards = [card.id for card in game.cards]
-            return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
-        else:
-            games = Game.query.all()
-            game_list = []
-            for game in games:
-                user = game.user
-                cards = [card.id for card in game.cards]
-                game_list.append({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
-            return jsonify(game_list)
+    def get(self):
+        games = Game.query.all()
+        games_dict_list = [game.to_dict()
+                                for game in games]
+        response = make_response(
+            games_dict_list,
+            200
+        )
+        return response
 
     def post(self):
-        data = request.get_json()
-        user_id = data['user_id']
-        card_ids = data['card_ids']
-        game = Game(user_id=user_id, bet=bet)
-        for card_id in card_ids:
-            card = Card.query.get(card_id)
-            game.cards.append(card)
+        data =request.get_json()
+        game = Game(
+            dealer_hand = data['dealer_hand'],
+            # train - data["train"],
+            user_hand = data['user_hand'],
+            #user = data["user"],
+            result = data["result"],
+            user_id = data["user_id"]
+        )
         db.session.add(game)
         db.session.commit()
-        return jsonify({'id': game.id, 'user_id': user.id, 'username': user.username,'cards': cards, 'result': game.result})
-api.add_resource(Games, '/games', '/games/<int:game_id>')
+        return make_response(game.to_dict(),201)
 
+api.add_resource(Games, '/games')
 
 
 class GameById(Resource):
@@ -96,9 +92,20 @@ class GameById(Resource):
                 "error": "Game not found"
             }, 404)
         game_dict = game.to_dict(
-            rules=('card','user'))
+        rules=('card','user'))
         response = make_response(game_dict, 200)
         return response
+
+    def delete(self, id):
+        game = Game.query.filter_by(id=id).first()
+        if not game:
+            return make_response({
+                "error": "Game not found"
+            }, 404)
+
+        db.session.delete(game)
+        db.session.commit()
+        return make_response({}, 204)
 api.add_resource(GameById, '/games/<int:id>')
 
 
